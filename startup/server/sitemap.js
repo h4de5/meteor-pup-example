@@ -2,6 +2,7 @@ import xml from 'xml';
 import { Meteor } from 'meteor/meteor';
 import { Picker } from 'meteor/meteorhacks:picker';
 import Documents from '../../api/Documents/Documents';
+import Polls from '../../api/Polls/Polls';
 import { iso } from '../../modules/dates.js';
 
 const baseUrl = Meteor.absoluteUrl();
@@ -25,7 +26,15 @@ const routes = [
     // NOTE: Edit this query to limit what you publish.
     query: {},
     projection: { fields: { _id: 1, createdAt: 1 }, sort: { createdAt: -1 } },
-  },
+	},
+	{
+		base: 'polls',
+		collection: Polls,
+		// NOTE: Edit this query to limit what you publish.
+		query: {},
+		projection: { fields: { _id: 1, createdAt: 1 }, sort: { createdAt: -1 } },
+	},
+	
 ];
 
 const sitemap = {

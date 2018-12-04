@@ -2,6 +2,8 @@ import seeder from '@cleverbeagle/seeder';
 import { Meteor } from 'meteor/meteor';
 import Documents from '../../api/Documents/Documents';
 import Comments from '../../api/Comments/Comments';
+import Polls from '../../api/Polls/Polls';
+import Options from '../../api/Options/Options';
 
 const commentsSeed = (userId, date, documentId) => {
   seeder(Comments, {
@@ -49,6 +51,56 @@ const documentsSeed = (userId) => {
   });
 };
 
+
+const optionsSeed = (userId, date, pollId) => {
+	seeder(Options, {
+		seedIfExistingData: true,
+		environments: ['development', 'staging'],
+		data: {
+			dynamic: {
+				count: 5,
+				seed(optionIteration, faker) {
+					return {
+						userId,
+						pollId,
+						value: faker.hacker.phrase(),
+						order: `${optionIteration + 1}`,
+						createdAt: date,
+					};
+				},
+			},
+		},
+	});
+};
+
+const pollsSeed = (userId) => {
+	seeder(Polls, {
+		seedIfExistingData: true,
+		environments: ['development', 'staging'],
+		data: {
+			dynamic: {
+				count: 3,
+				seed(iteration) {
+					const date = new Date().toISOString();
+					return {
+						isPublic: false,
+						createdAt: date,
+						updatedAt: date,
+						owner: userId,
+						title: `Poll #${iteration + 1}`,
+						description: `This is the description of poll #${iteration + 1}`,
+						dependentData(pollId) {
+							optionsSeed(userId, date, pollId);
+							commentsSeed(userId, date, pollId);
+						},
+					};
+				},
+			},
+		},
+	});
+};
+
+
 seeder(Meteor.users, {
   seedIfExistingData: true,
   environments: ['development', 'staging'],
@@ -65,8 +117,9 @@ seeder(Meteor.users, {
         },
         roles: ['admin'],
         dependentData(userId) {
-          documentsSeed(userId);
-        },
+					documentsSeed(userId);
+					pollsSeed(userId);
+				},
       },
     ],
     dynamic: {
@@ -85,7 +138,7 @@ seeder(Meteor.users, {
           roles: ['user'],
           dependentData(userId) {
             documentsSeed(userId);
-          },
+					}
         };
       },
     },

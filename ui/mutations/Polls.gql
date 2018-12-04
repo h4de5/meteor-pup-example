@@ -1,0 +1,29 @@
+mutation addPoll($title: String, $description: String) {
+  addPoll(title: $title, description: $description) {
+    _id
+    isPublic
+    title
+    description
+    createdAt
+    updatedAt
+    owner
+  }
+}
+
+mutation updatePoll($_id: String!, $title: String, $description: String, $isPublic: Boolean) {
+  updatePoll(_id: $_id, title: $title, description: $description, isPublic: $isPublic) {
+    _id
+    isPublic
+    title
+    description
+    createdAt
+    updatedAt
+    owner
+  }
+}
+
+mutation removePoll($_id: String!) {
+  removePoll(_id: $_id) {
+    _id
+  }
+}

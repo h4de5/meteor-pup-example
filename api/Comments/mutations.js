@@ -17,10 +17,28 @@ export default {
     const commentId = Comments.insert(commentToInsert);
     context.pubsub.publish('commentAdded', {
       commentAdded: { _id: commentId, ...commentToInsert },
-    });
+		});
 
     return { _id: commentId, ...commentToInsert };
-  },
+	},
+	addPollComment(root, args, context) {
+		if (!context.user) throw new Error('Sorry, you must be logged in to add a new comment on a poll.');
+
+		const date = new Date().toISOString();
+		const commentToInsert = {
+			documentId: args.pollId,
+			comment: sanitizeHtml(args.comment),
+			userId: context.user._id,
+			createdAt: date,
+		};
+
+		const commentId = Comments.insert(commentToInsert);
+		context.pubsub.publish('pollcommentAdded', {
+			pollcommentAdded: { _id: pollId, ...commentToInsert },
+		});
+
+		return { _id: commentId, ...commentToInsert };
+	},
   removeComment(root, args, context) {
     if (!context.user) throw new Error('Sorry, you must be logged in to remove a comment.');
 

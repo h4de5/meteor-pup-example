@@ -17,6 +17,14 @@ import CommentQueries from '../../api/Comments/queries';
 import CommentMutations from '../../api/Comments/mutations';
 import CommentSubscriptions from '../../api/Comments/subscriptions';
 
+import PollTypes from '../../api/Polls/types';
+import PollQueries from '../../api/Polls/queries';
+import PollMutations from '../../api/Polls/mutations';
+
+import OptionTypes from '../../api/Options/types';
+import OptionQueries from '../../api/Options/queries';
+import OptionMutations from '../../api/Options/mutations';
+
 import OAuthQueries from '../../api/OAuth/queries';
 
 import '../../api/Documents/server/indexes';
@@ -27,7 +35,9 @@ const schema = {
     ${UserTypes}
     ${DocumentTypes}
     ${CommentTypes}
-    ${UserSettingsTypes}
+		${UserSettingsTypes}
+		${PollTypes}
+		${OptionTypes}
 
     type Query {
       documents: [Document]
@@ -36,7 +46,9 @@ const schema = {
       users(currentPage: Int, perPage: Int, search: String): Users
       userSettings: [UserSetting]
       exportUserData: UserDataExport
-      oAuthServices(services: [String]): [String]
+			oAuthServices(services: [String]): [String]
+			polls: [Poll]
+      poll(_id: String): Poll
     }
 
     type Mutation {
@@ -51,11 +63,19 @@ const schema = {
       updateUserSetting(setting: UserSettingInput): UserSetting
       removeUserSetting(_id: String!): UserSetting
       sendVerificationEmail: User
-      sendWelcomeEmail: User
+			sendWelcomeEmail: User
+			addPoll(title: String, description: String): Poll
+			updatePoll(_id: String!, title: String, description: String, isPublic: Boolean): Poll
+			removePoll(_id: String!): Poll
+			addOption(pollId: String!, value: String!, order: Int): Option
+			updateOption(_id: String!, value: String!, order: Int): Option
+			removeOption(_id: String!): Option
+			addPollComment(documentId: String!, comment: String!): Comment
     }
 
     type Subscription {
-      commentAdded(documentId: String!): Comment
+			commentAdded(documentId: String!): Comment
+			pollcommentAdded(pollId: String!): Comment
     }
   `,
   resolvers: {
@@ -63,20 +83,27 @@ const schema = {
       ...DocumentQueries,
       ...UserQueries,
       ...UserSettingsQueries,
-      ...OAuthQueries,
+			...OAuthQueries,
+			...PollQueries,
     },
     Mutation: {
       ...DocumentMutations,
       ...CommentMutations,
       ...UserMutations,
-      ...UserSettingsMutations,
+			...UserSettingsMutations,
+			...PollMutations,
+			...OptionMutations,
     },
     Subscription: {
       ...CommentSubscriptions,
     },
     Document: {
       comments: CommentQueries.comments,
-    },
+		},
+		Poll: {
+			options: OptionQueries.options,
+			comments: CommentQueries.pollcomments,
+		},
     Comment: {
       user: UserQueries.user,
     },

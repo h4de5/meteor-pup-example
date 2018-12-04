@@ -1,0 +1,25 @@
+mutation addOption($value: String, $order: Int) {
+  addOption(title: $value, order: $order) {
+    _id
+    order
+    value
+    createdAt
+    updatedAt
+  }
+}
+
+mutation updateOption($_id: String!, $value: String, $order: Int) {
+  updateOption(_id: $_id, value: $value, order: $order) {
+    _id
+		order
+    value
+    createdAt
+    updatedAt
+  }
+}
+
+mutation removeOption($_id: String!) {
+  removeOption(_id: $_id) {
+    _id
+  }
+}

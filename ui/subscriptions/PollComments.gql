@@ -1,0 +1,15 @@
+subscription pollcommentAdded($pollId: String!) {
+  pollcommentAdded(documentId: $pollId) {
+    _id
+    documentId
+    comment
+    createdAt
+    user {
+      _id
+      name {
+        first
+        last
+      }
+    }
+  }
+}

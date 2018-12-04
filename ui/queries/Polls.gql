@@ -1,0 +1,49 @@
+#import "../fragments/Polls.gql"
+
+query polls {
+  polls {
+    _id
+    isPublic
+    title
+		description
+    updatedAt
+    createdAt
+  }
+}
+
+query editPoll($_id: String) {
+  poll(_id: $_id) {
+    ...PollAttributes
+  }
+}
+
+query poll($_id: String) {
+  poll(_id: $_id) {
+    ...PollAttributes
+		options {
+      _id
+      value
+      createdAt
+			order
+      user {
+        _id
+        name {
+          first
+          last
+        }
+      }
+    }
+    comments {
+      _id
+      comment
+      createdAt
+      user {
+        _id
+        name {
+          first
+          last
+        }
+      }
+    }
+  }
+}

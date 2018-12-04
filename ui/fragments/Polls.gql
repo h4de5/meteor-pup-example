@@ -1,0 +1,8 @@
+fragment PollAttributes on Poll {
+  _id
+  isPublic
+  title
+  description
+  updatedAt
+  createdAt
+}

@@ -19,6 +19,10 @@ import Documents from '../../pages/Documents';
 import ViewDocument from '../../pages/ViewDocument';
 import EditDocument from '../../pages/EditDocument';
 
+import Polls from '../../pages/Polls';
+import ViewPoll from '../../pages/ViewPoll';
+import EditPoll from '../../pages/EditPoll';
+
 import Profile from '../../pages/Profile';
 import Signup from '../../pages/Signup';
 import Login from '../../pages/Login';
@@ -95,7 +99,27 @@ class App extends React.Component {
               setAfterLoginPath={setAfterLoginPath}
               {...props}
               {...state}
-            />
+						/>
+						
+
+						<Authenticated
+							exact
+							path="/polls"
+							component={Polls}
+							setAfterLoginPath={setAfterLoginPath}
+							{...props}
+							{...state}
+						/>
+						<Route exact path="/polls/:_id" component={ViewPoll} />
+						<Authenticated
+							exact
+							path="/polls/:_id/edit"
+							component={EditPoll}
+							setAfterLoginPath={setAfterLoginPath}
+							{...props}
+							{...state}
+						/>
+						
 
             <Authenticated
               exact
